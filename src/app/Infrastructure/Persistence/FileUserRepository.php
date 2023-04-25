@@ -2,10 +2,10 @@
 
 namespace App\Infrastructure\Persistence;
 
-use App\Application\UserDataSource\UserDataSource;
 use App\Domain\User;
+use App\Domain\UserRepository;
 
-class FileUserDataSource implements UserDataSource
+class FileUserRepository implements UserRepository
 {
     public function findByEmail(string $email): User
     {

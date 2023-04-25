@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Application\UserDataSource;
+namespace App\Domain;
 
-use App\Domain\User;
-
-Interface UserDataSource
+Interface UserRepository
 {
     public function findByEmail(string $email): User;
 

@@ -2,7 +2,6 @@
 
 namespace App\Infrastructure\Providers;
 
-use App\Application\UserDataSource\UserDataSource;
 use App\DataSource\Database\EloquentUserDataSource;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-//        $this->app->bind(UserDataSource::class, function () {
+//        $this->app->bind(UserRepository::class, function () {
 //            return new EloquentUserDataSource();
 //        });
     }
