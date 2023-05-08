@@ -11,6 +11,7 @@ class GetStatusControllerTest extends TestCase
      */
     public function systemIsUpAndRunning()
     {
+
         $response = $this->get('/api/status');
 
         $response->assertExactJson(['status' => 'Ok', 'message' => 'Systems are up and running']);
