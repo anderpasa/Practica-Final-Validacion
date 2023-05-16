@@ -1,1 +1,1 @@
-{"version":1,"defects":[],"times":{"Tests\\app\\Infrastructure\\Controller\\GetStatusControllerTest::systemIsUpAndRunning":11.847}}
+{"version":1,"defects":[],"times":{"Tests\\app\\Infrastructure\\Controller\\GetStatusControllerTest::systemIsUpAndRunning":11.847,"Tests\\app\\Infrastructure\\Controller\\OpenNewWalletControllerTest::walletServiceUnavailable":12.047,"Tests\\app\\Infrastructure\\Controller\\OpenNewWalletControllerTest::walletCreated":0.522,"Tests\\app\\Infrastructure\\Controller\\OpenNewWalletControllerTest::multipleWalletsCreated":0.436}}
