@@ -4,7 +4,7 @@ namespace App\Domain;
 
 class Wallet
 {
-    private string $wallet_id;
+    private int $wallet_id;
     private string $name;
     private string $id_usuario;
     private array $coins = [];
@@ -12,16 +12,13 @@ class Wallet
     private float $value_usd;
 
     /**
-     * @param string $wallet_id
-     * @param string $name
-     * @param string $id_usuario
+     * @param int $wallet_id
      * @param array $coins
      */
-    public function __construct(string $wallet_id, string $name, string $id_usuario, array $coins, )
+
+    public function __construct(int $wallet_id, array $coins)
     {
         $this->wallet_id = $wallet_id;
-        $this->name = $name;
-        $this->id_usuario = $id_usuario;
         $this->coins = $coins;
     }
 
