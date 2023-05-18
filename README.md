@@ -10,6 +10,7 @@ The project must be mounted using docker:
   - docker exec -it laravel-php /bin/zsh
   
 
+
 - From inside the machine:
   - Run: composer install
   - Copy the .env.example to .env
