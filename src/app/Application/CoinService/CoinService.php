@@ -3,10 +3,8 @@
 namespace App\Application\CoinService;
 
 use App\Application\CoinDataSource\CoinDataSource;
-use App\Application\CoinDataSource\CryptoCoinDataSource;
 use App\Domain\Coin;
 use Exception;
-
 
 class CoinService
 {

@@ -3,10 +3,10 @@
 namespace App\Infrastructure\Controllers;
 
 use App\Application\CoinService\CoinService;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
+use Exception;
 
 class GetCoinController extends BaseController
 {

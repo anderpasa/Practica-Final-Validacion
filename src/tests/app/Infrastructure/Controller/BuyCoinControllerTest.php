@@ -3,11 +3,11 @@
 namespace Tests\app\Infrastructure\Controller;
 
 use App\Application\CoinDataSource\BuyCoinDataSource;
-use App\Domain\Coin;
+use Tests\TestCase;
 use Illuminate\Http\Response;
 use Mockery;
 use Exception;
-use Tests\TestCase;
+
 define("token", array(
     'Content-Type: application/json'
 ));
@@ -118,7 +118,6 @@ class BuyCoinControllerTest extends TestCase
      */
     public function errorInAmount()
     {
-
         $fields = array( "coin_id"=>'1',"wallet_id"=>"1");
 
         $response = $this->post('api/coin/buy',$fields,token);

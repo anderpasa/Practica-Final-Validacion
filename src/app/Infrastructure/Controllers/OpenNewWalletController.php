@@ -7,7 +7,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
-use Exception;
 
 class OpenNewWalletController extends BaseController
 {
@@ -20,17 +19,16 @@ class OpenNewWalletController extends BaseController
         $this->openNewWalletService = $walletService;
     }
 
-    public function __invoke(): JsonResponse
+    public function __invoke(Request $request): JsonResponse
     {
-        try{
-            $wallet = $this->openNewWalletService->execute();
-        }catch (Exception $exception){
+        if ((implode($request->all())) != ""){
+            //comprobar existencia Usuario -> para devolver un 404
+            $wallet = $this->openNewWalletService->execute($request->input('user_id'));
+            return response()->json(['wallet_id' => $wallet->getWalletId()], Response::HTTP_OK);
+        }else{
             return response()->json([
-                'error' => $exception->getMessage()
-            ], $exception->getCode());
+                'error' => "user_id mandatory"
+            ], Response::HTTP_BAD_REQUEST);
         }
-        return response()->json([
-            'wallet_id' => $wallet->getWalletId()
-        ], Response::HTTP_OK);
     }
 }

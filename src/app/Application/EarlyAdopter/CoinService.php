@@ -3,9 +3,7 @@
 namespace App\Application\EarlyAdopter;
 
 use App\Application\CoinDataSource\CoinDataSource;
-use App\Application\CoinDataSource\CryptoCoinDataSource;
 use Exception;
-
 
 class CoinService
 {

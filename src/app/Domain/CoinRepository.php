@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Domain;
-
 Interface CoinRepository
 {
     public function buyCoin();

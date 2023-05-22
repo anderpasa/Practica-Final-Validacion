@@ -2,7 +2,6 @@
 
 namespace App\Application\CoinDataSource;
 
-
 use App\Domain\Coin;
 use Exception;
 
@@ -10,13 +9,12 @@ class CryptoCoinDataSource implements CoinDataSource
 {
     public function findByCoinId(string $coin_id)
     {
-
         $path = 'https://api.coinlore.net/api/ticker/?id=' . $coin_id;
-
         $ch = curl_init($path);
+        $data = json_decode(curl_exec($ch));
+
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
         curl_setopt($ch,CURLOPT_HEADER,0);
-        $data = json_decode(curl_exec($ch));
         curl_close($ch);
 
         if($data == null){
