@@ -1,6 +1,8 @@
 <?php
 
+use App\Infrastructure\Controllers\BuyCoinController;
 use App\Infrastructure\Controllers\OpenNewWalletController;
+//use App\Infrastructure\Controllers\SellCoinController;
 use App\Infrastructure\Controllers\GetStatusController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,9 +16,13 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('coin/buy', \App\Infrastructure\Controllers\BuyCoinController::class);
+Route::post('coin/buy', BuyCoinController::class);
+
+//Route::get('/wallet/{wallet_id}', GetsWalletCryptocurrenciesController::class);
 
 Route::get('/status', GetStatusController::class);
+
+//Route::post('coin/sell', SellCoinController::class);
 
 Route::post('wallet/open', OpenNewWalletController::class);
 

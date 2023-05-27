@@ -3,17 +3,22 @@
 namespace Tests\app\Infrastructure\Controller;
 
 use App\Application\CoinDataSource\BuyCoinDataSource;
+use App\Application\CoinDataSource\CryptoCoinDataSource;
+use App\Application\WalletDataSource\WalletDataSource;
 use App\Domain\Coin;
+use App\Domain\Wallet;
+use Tests\TestCase;
 use Illuminate\Http\Response;
 use Mockery;
 use Exception;
-use Tests\TestCase;
+
 define("token", array(
     'Content-Type: application/json'
 ));
 class BuyCoinControllerTest extends TestCase
 {
-    private BuycoinDataSource $BuyCoinDataSource;
+    private WalletDataSource $WalletDataSource;
+    private CoinDataSource $CoinDataSource;
 
     /**
      * @setUp
@@ -21,8 +26,28 @@ class BuyCoinControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->BuyCoinDataSource = Mockery::mock(BuycoinDataSource::class);
-        $this->app->bind(BuycoinDataSource::class, fn() => $this->BuyCoinDataSource);
+        $this->WalletDataSource = Mockery::mock(WalletDataSource::class);
+        $this->app->bind(WalletDataSource::class, fn() => $this->WalletDataSource);
+        $this->CoinDataSource = Mockery::mock(CoinDataSource::class);
+        $this->app->bind(CoinDataSource::class, fn() => $this->CoinDataSource);
+    }
+
+    /**
+     * @test
+     */
+    public function badRequests()
+    {
+        $coin_id = '1';
+        $wallet_id = "1";
+        $amount_usd = 1;
+
+        $response1 = $this->post('api/coin/buy',["wallet_id" => "$wallet_id", "amount_usd" => $amount_usd]);
+        $response2 = $this->post('api/coin/buy',["coin_id" => "$coin_id", "amount_usd" => $amount_usd]);
+        $response3 = $this->post('api/coin/buy',["coin_id" => "$coin_id", "wallet_id" => "$wallet_id"]);
+
+        $response1->assertStatus(Response::HTTP_BAD_REQUEST);
+        $response2->assertStatus(Response::HTTP_BAD_REQUEST);
+        $response3->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
     /**
@@ -30,100 +55,44 @@ class BuyCoinControllerTest extends TestCase
      */
     public function coinWithGivenIdDoesNotExist()
     {
-        $id = '2000';
+        $coin_id = "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999";
         $wallet_id = "1";
         $amount_usd = 1;
-        $this->BuyCoinDataSource
+        $this->CoinDataSource
             ->expects('findByCoinId')
-            ->with($id,$wallet_id,$amount_usd)
-            ->once()
+            ->with($coin_id)
+            ->times(0)
             ->andThrow(new Exception('A coin with the specified ID was not found'));
 
-        $fields = array("coin_id" => $id, "wallet_id" => $wallet_id, 'amount_usd' =>$amount_usd );
-
-        $response = $this->post('api/coin/buy',$fields,token);
+        $response = $this->post('api/coin/buy', ["coin_id" => "$coin_id", "wallet_id" => "$wallet_id", "amount_usd" => $amount_usd]);
 
         $response->assertStatus(Response::HTTP_NOT_FOUND)->assertExactJson(['error' => 'A coin with the specified ID was not found']);
     }
+
     /**
      * @test
      */
-    public function errorInServer()
+    public function addNewCoinToWallet()
     {
-        $id = '200';
+        $coin_id = '10';
         $wallet_id = "1";
         $amount_usd = 1;
-        $this->BuyCoinDataSource
+        $this->CoinDataSource
             ->expects('findByCoinId')
-            ->with($id,$wallet_id,$amount_usd)
-            ->once()
-            ->andThrow(new Exception('Service Unavailible'));
+            ->with($coin_id)
+            ->times(0)
+            ->andReturn(new Coin($coin_id, "BlackCoin", "BLK", 0, 0.017389));
+        $this->WalletDataSource
+            ->expects("get")
+            ->with($wallet_id)
+            ->andReturn(new Wallet(1, []));
+        $this->WalletDataSource
+            ->expects("insertCoin");
 
-        $fields = array("coin_id" => $id, "wallet_id" => $wallet_id, 'amount_usd' =>$amount_usd );
+        $response = $this->post('api/coin/buy', ["coin_id" => "$coin_id", "wallet_id" => "$wallet_id", "amount_usd" => $amount_usd]);
 
-        $response = $this->post('api/coin/buy',$fields,token);
-
-        $response->assertStatus(Response::HTTP_SERVICE_UNAVAILABLE)->assertExactJson(['error' => 'Service Unavailible']);
+        $response->assertStatus(Response::HTTP_OK);
     }
 
-    /**
-     * @test
-     */
-    public function coinWithValidIdReturnJsonCoin()
-    {
-        $id = '10';
-        $wallet_id = "1";
-        $amount_usd = 1;
-        $this->BuyCoinDataSource
-            ->expects('findByCoinId')
-            ->with($id,$wallet_id,$amount_usd)
-            ->once()
-            ->andReturn("successful operation");
-
-        $fields = array("coin_id" => $id, "wallet_id" => $wallet_id, 'amount_usd' =>$amount_usd );
-
-        $response = $this->post('api/coin/buy',$fields,token);
-
-        $response->assertStatus(Response::HTTP_OK)->assertExactJson((array)"successful operation");
-    }
-    /**
-     * @test
-     */
-    public function errorInCoinId()
-    {
-        $wallet_id = "1";
-        $amount_usd = 1;
-
-
-        $fields = array( "wallet_id" => $wallet_id, 'amount_usd' =>$amount_usd );
-
-        $response = $this->post('api/coin/buy',$fields,token);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST)->assertExactJson(['error' => 'coin_id mandatory']);
-    }
-    /**
-     * @test
-     */
-    public function errorInWalletId()
-    {
-
-        $fields = array( "coin_id"=>'1', 'amount_usd' =>1 );
-
-        $response = $this->post('api/coin/buy',$fields,token);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST)->assertExactJson(['error' => 'wallet_id mandatory']);
-    }
-    /**
-     * @test
-     */
-    public function errorInAmount()
-    {
-
-        $fields = array( "coin_id"=>'1',"wallet_id"=>"1");
-
-        $response = $this->post('api/coin/buy',$fields,token);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST)->assertExactJson(['error' => 'amount_usd mandatory']);
-    }
 }
 

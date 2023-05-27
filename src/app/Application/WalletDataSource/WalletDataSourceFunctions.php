@@ -2,35 +2,40 @@
 
 namespace App\Application\WalletDataSource;
 
+use App\Domain\Coin;
 use App\Domain\Wallet;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Mockery\Exception;
 
-
 class WalletDataSourceFunctions implements WalletDataSource
 {
-    public function add() : Wallet {
-        $wallet_id = 1;
-
-        while (Cache::has('wallet'.$wallet_id)) {
-            $wallet_id++;
-        }
-        $wallet = new Wallet($wallet_id,[]);
-        Cache::put('wallet'.$wallet_id,$wallet);
+    public function add(String $user_id) : Wallet
+    {
+        $wallet = new Wallet($user_id,[]);
+        $wallet->setIdUsuario($user_id);
+        Cache::put('wallet'.$user_id,$wallet);
         return $wallet;
     }
 
-    public function get(int $wallet_id): Wallet
+    public function get(String $wallet_id): Wallet
     {
         if(Cache::has('wallet'.$wallet_id)) {
-            if(Cache::has('wallet'.$wallet_id)) {
-                return Cache::get('wallet'.$wallet_id);
-            }
-            throw new Exception('Service unavailable', Response::HTTP_NOT_FOUND);
+            return Cache::get('wallet'.$wallet_id);
         }
-        throw new Exception('A wallet with the specified ID was not found.', Response::HTTP_NOT_FOUND);
+        throw new Exception();
     }
 
+    public function insertCoin(Wallet $wallet, Coin $coin):void
+    {
+        $coins = $wallet->getCoins();
 
+        /*
+        if (isset($coins[$coin_id])) {
+
+        }
+        */
+
+        $coins = array_merge($coins, (array)$coin);
+        $wallet->setCoins($coins);
+    }
 }

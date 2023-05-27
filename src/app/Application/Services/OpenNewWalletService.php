@@ -1,17 +1,13 @@
 <?php
 
-namespace App\Application\EarlyAdopter;
-
-
+namespace App\Application\Services;
 
 use App\Application\WalletDataSource\WalletDataSource;
 use App\Domain\Wallet;
 use Exception;
-use Illuminate\Http\Response;
 
 class OpenNewWalletService
 {
-
     private WalletDataSource $walletRepository;
 
     public function __construct(WalletDataSource $walletDataSource)
@@ -19,15 +15,16 @@ class OpenNewWalletService
         $this->walletRepository = $walletDataSource;
     }
 
-
-    public function execute(): Wallet
+    /**
+     * @throws Exception
+     */
+    public function execute(String $user_id): Wallet
     {
-        try {
-            $wallet = $this->walletRepository->add();
-        } catch (Exception) {
-
-            throw new Exception('Service unavailable', Response::HTTP_NOT_FOUND);
+        $wallet_id = $user_id;
+        try{
+            return $this->walletRepository->get($wallet_id);
+        }catch(Exception){
+            return $this->walletRepository->add($wallet_id);
         }
-        return $wallet;
     }
 }
