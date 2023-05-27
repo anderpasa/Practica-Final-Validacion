@@ -31,14 +31,6 @@ class Wallet
     }
 
     /**
-     * @param string $wallet_id
-     */
-    public function setWalletId(string $wallet_id): void
-    {
-        $this->wallet_id = $wallet_id;
-    }
-
-    /**
      * @return string
      */
     public function getName(): string
@@ -85,7 +77,6 @@ class Wallet
     {
         $this->coins = $coins;
     }
-
 
 
 

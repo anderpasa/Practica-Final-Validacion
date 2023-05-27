@@ -22,7 +22,6 @@ class OpenNewWalletController extends BaseController
     public function __invoke(Request $request): JsonResponse
     {
         if ((implode($request->all())) != ""){
-            //comprobar existencia Usuario -> para devolver un 404
             $wallet = $this->openNewWalletService->execute($request->input('user_id'));
             return response()->json(['wallet_id' => $wallet->getWalletId()], Response::HTTP_OK);
         }else{

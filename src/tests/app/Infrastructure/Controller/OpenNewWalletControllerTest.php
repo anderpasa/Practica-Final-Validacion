@@ -20,7 +20,6 @@ class OpenNewWalletControllerTest extends TestCase
         $this->app->bind(WalletDataSource::class, fn () => $this->walletDataSource);
     }
 
-
     /**
      * @test
      */
@@ -51,22 +50,5 @@ class OpenNewWalletControllerTest extends TestCase
 
         $response->assertExactJson(['wallet_id' => $id]);
     }
-
-    /**
-     * @test
-     *//*
-    public function getExistingWallets()
-    {
-        $id = "1";
-        $this->walletDataSource
-            ->expects('add')        //Se puede hacer un segundo mockery para hacer el get?
-            ->with($id)
-            ->andReturn(new Wallet($id, []));
-
-        $response = $this->post('/api/wallet/open', ["user_id" => $id]);
-
-        $response->assertExactJson(['wallet_id' => $id]);
-    }
-*/
 }
 

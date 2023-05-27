@@ -4,6 +4,9 @@ namespace App\Domain;
 
 class ApiClient
 {
+
+
+
     public function buyCoin(string $coin_id, string $wallet_id, int $amount){
 
 
@@ -18,7 +21,7 @@ class ApiClient
     }
 
     public function getCryptocurrencies(string $wallet_id){
-    
+
     }
     public function balance(string $wallet_id){
 

@@ -7,30 +7,31 @@ use Exception;
 
 class CryptoCoinDataSource implements CoinDataSource
 {
-    public function findByCoinId(string $coin_id)
+    /**
+     * @throws Exception
+     */
+    public function findByCoinId(string $coin_id): Coin
     {
-        $path = 'https://api.coinlore.net/api/ticker/?id=' . $coin_id;
-        $ch = curl_init($path);
-        $data = json_decode(curl_exec($ch));
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.coinlore.net/api/ticker/?id=' . $coin_id,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_RETURNTRANSFER => true,
+        ));
+        $response = curl_exec($curl);
+        //print($response);
+        curl_close($curl);
 
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-        curl_setopt($ch,CURLOPT_HEADER,0);
-        curl_close($ch);
-
-        if($data == null){
-            return new Exception("A coin with the specified ID was not found");
-            //return new Coin("1","ERROR","ERR","0",1,"ERROR",1);
+        if($response === "[]"){
+            throw new Exception();
         }
+        $data = json_decode($response);
         $data = $data[0];
         $name = $data->name;
         $symbol = $data->symbol;
         $amount = 0;
         $value_usd = floatval($data->price_usd);
-        $name_id = $data->nameid;
-        $rank = $data->rank;
 
-        $Coin = new Coin($amount,$coin_id,$name,$name_id,$rank,$symbol,$value_usd);
-
-        return $Coin;
+        return new Coin($coin_id,$name,$symbol,$amount,$value_usd);
     }
 }
