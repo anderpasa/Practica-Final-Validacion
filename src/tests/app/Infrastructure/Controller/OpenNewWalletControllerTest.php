@@ -50,5 +50,21 @@ class OpenNewWalletControllerTest extends TestCase
 
         $response->assertExactJson(['wallet_id' => $id]);
     }
+
+    /**
+     * @test
+     */
+    public function walletGet()
+    {
+        $id = "1";      //Se tiene una única variable de id porque el usuario al sólo poder disponer de una cartera, no es necesario el que haya 2 variables, una para el id del usuario y otra para la cartera porque coinciden en que son la misma
+        $this->walletDataSource
+            ->expects('get')
+            ->with($id)
+            ->andReturn(new Wallet($id, []));
+
+        $response = $this->post('/api/wallet/open', ["user_id" => $id]);
+
+        $response->assertExactJson(['wallet_id' => $id]);
+    }
 }
 

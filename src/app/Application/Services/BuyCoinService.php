@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\CoinService;
+namespace App\Application\Services;
 
 use App\Application\CoinDataSource\CryptoCoinDataSource;
 use App\Application\WalletDataSource\WalletDataSource;

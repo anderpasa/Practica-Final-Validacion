@@ -1,5 +1,5 @@
 <?php
-namespace App\Application\CoinService;
+namespace App\Application\Services;
 
 use App\Application\CoinDataSource\SellCoinDataSource;
 use Exception;
