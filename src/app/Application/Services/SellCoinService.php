@@ -1,31 +1,46 @@
 <?php
 namespace App\Application\Services;
 
+use App\Application\CoinDataSource\CryptoCoinDataSource;
 use App\Application\CoinDataSource\SellCoinDataSource;
+use App\Application\WalletDataSource\WalletDataSource;
 use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class SellCoinService
 {
-    /**
-     * @var SellCoinDataSource
-     */
-    private SellCoinDataSource $SellCoinDataSource;
+    private WalletDataSource $walletDataSource;
+    private CryptoCoinDataSource $cryptoCoinDataSource;
 
-    /**
-     * @param SellCoinDataSource $SellCoinDataSource
-     */
-    public function __construct(SellCoinDataSource $SellCoinDataSource)
+    public function __construct(WalletDataSource $walletDataSource, CryptoCoinDataSource $cryptoCoinDataSource)
     {
-        $this->SellCoinDataSource = $SellCoinDataSource;
+        $this->walletDataSource = $walletDataSource;
+        $this->cryptoCoinDataSource = $cryptoCoinDataSource;
     }
 
     /**
      * @throws Exception
      */
-    public function execute(string $coin_id,string $wallet_id,float $amount_usd):SellCoinDataSource
+    public function execute(string $coin_id,string $wallet_id,float $amount_usd): JsonResponse
     {
-        //Llamar a la api con el coin_id
-        return $this->SellCoinDataSource->SellCoin($coin_id,$wallet_id,$amount_usd);
-    }
+        try {
+            $coin = $this->cryptoCoinDataSource->findByCoinId($coin_id);
+        }catch (Exception){
+            return response()->json([
+                'error' => "A coin with the specified ID was not found"
+            ], Response::HTTP_NOT_FOUND);
+        }
 
+        try {
+            $wallet = $this->walletDataSource->get($wallet_id);
+        }catch (Exception){
+            return response()->json([
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->walletDataSource->sellCoin($wallet, $coin, $amount_usd);
+        return response()->json([
+        ], Response::HTTP_OK);
+    }
 }

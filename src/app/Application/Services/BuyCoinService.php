@@ -22,7 +22,7 @@ class BuyCoinService
     /**
      * @throws Exception
      */
-    public function execute(string $coin_id,string $wallet_id,float $amount_usd): JsonResponse
+    public function execute(string $coin_id, string $wallet_id, float $amount_usd): JsonResponse
     {
         try {
             $coin = $this->cryptoCoinDataSource->findByCoinId($coin_id);
@@ -39,7 +39,7 @@ class BuyCoinService
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $this->walletDataSource->insertCoin($wallet, $coin);
+        $this->walletDataSource->insertCoin($wallet, $coin, $amount_usd);
         return response()->json([
         ], Response::HTTP_OK);
     }

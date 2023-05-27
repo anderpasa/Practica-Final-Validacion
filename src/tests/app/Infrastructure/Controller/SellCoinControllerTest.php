@@ -2,7 +2,7 @@
 
 namespace Tests\app\Infrastructure\Controller;
 
-use App\Application\CoinDataSource\BuyCoinDataSource;
+use App\Application\CoinDataSource\CoinDataSource;
 use App\Application\WalletDataSource\WalletDataSource;
 use App\Domain\Coin;
 use App\Domain\Wallet;
@@ -14,7 +14,7 @@ use Mockery;
 define("token", array(
     'Content-Type: application/json'
 ));
-class BuyCoinControllerTest extends TestCase
+class SellCoinControllerTest extends TestCase
 {
     private WalletDataSource $WalletDataSource;
     private CoinDataSource $CoinDataSource;
@@ -40,9 +40,9 @@ class BuyCoinControllerTest extends TestCase
         $wallet_id = "1";
         $amount_usd = 1;
 
-        $response1 = $this->post('api/coin/buy',["wallet_id" => "$wallet_id", "amount_usd" => $amount_usd]);
-        $response2 = $this->post('api/coin/buy',["coin_id" => "$coin_id", "amount_usd" => $amount_usd]);
-        $response3 = $this->post('api/coin/buy',["coin_id" => "$coin_id", "wallet_id" => "$wallet_id"]);
+        $response1 = $this->post('api/coin/sell',["wallet_id" => "$wallet_id", "amount_usd" => $amount_usd]);
+        $response2 = $this->post('api/coin/sell',["coin_id" => "$coin_id", "amount_usd" => $amount_usd]);
+        $response3 = $this->post('api/coin/sell',["coin_id" => "$coin_id", "wallet_id" => "$wallet_id"]);
 
         $response1->assertStatus(Response::HTTP_BAD_REQUEST);
         $response2->assertStatus(Response::HTTP_BAD_REQUEST);
@@ -63,7 +63,7 @@ class BuyCoinControllerTest extends TestCase
             ->times(0)
             ->andThrow(new Exception('A coin with the specified ID was not found'));
 
-        $response = $this->post('api/coin/buy', ["coin_id" => "$coin_id", "wallet_id" => "$wallet_id", "amount_usd" => $amount_usd]);
+        $response = $this->post('api/coin/sell', ["coin_id" => "$coin_id", "wallet_id" => "$wallet_id", "amount_usd" => $amount_usd]);
 
         $response->assertStatus(Response::HTTP_NOT_FOUND)->assertExactJson(['error' => 'A coin with the specified ID was not found']);
     }
@@ -86,12 +86,10 @@ class BuyCoinControllerTest extends TestCase
             ->with($wallet_id)
             ->andReturn(new Wallet(1, []));
         $this->WalletDataSource
-            ->expects("insertCoin");
+            ->expects("sellCoin");
 
-        $response = $this->post('api/coin/buy', ["coin_id" => "$coin_id", "wallet_id" => "$wallet_id", "amount_usd" => $amount_usd]);
+        $response = $this->post('api/coin/sell', ["coin_id" => "$coin_id", "wallet_id" => "$wallet_id", "amount_usd" => $amount_usd]);
 
         $response->assertStatus(Response::HTTP_OK);
     }
-
 }
-
