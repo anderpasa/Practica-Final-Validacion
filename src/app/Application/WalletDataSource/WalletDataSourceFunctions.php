@@ -25,17 +25,35 @@ class WalletDataSourceFunctions implements WalletDataSource
         throw new Exception();
     }
 
-    public function insertCoin(Wallet $wallet, Coin $coin):void
+    public function insertCoin(Wallet $wallet, Coin $coin, float $amount_usd):void
     {
+        $coin_id = $coin->getCoinId();
+        $price = $coin->getValueUsd();
+        $wallet_id = $wallet->getWalletId();
+        $amount_coins = $amount_usd/$price;
         $coins = $wallet->getCoins();
 
-        /*
-        if (isset($coins[$coin_id])) {
-
+        foreach ($coins as $key=>$value){
+            if($key === "coin_id" and $value === $coin_id){
+                $wallet['coins']['amount'] += $amount_coins;
+                Cache::put('wallet'.$wallet_id,$wallet);
+            }
         }
-        */
+    }
 
-        $coins = array_merge($coins, (array)$coin);
-        $wallet->setCoins($coins);
+    public function sellCoin(Wallet $wallet, Coin $coin, float $amount_usd):void
+    {
+        $coin_id = $coin->getCoinId();
+        $price = $coin->getValueUsd();
+        $wallet_id = $wallet->getWalletId();
+        $amount_coins = $amount_usd/$price;
+        $coins = $wallet->getCoins();
+
+        foreach ($coins as $key=>$value){
+            if($key === "coin_id" and $value === $coin_id){
+                $wallet['coins']['amount'] -= $amount_coins;
+                Cache::put('wallet'.$wallet_id,$wallet);
+            }
+        }
     }
 }
