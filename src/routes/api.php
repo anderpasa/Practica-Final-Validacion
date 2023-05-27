@@ -4,6 +4,7 @@ use App\Infrastructure\Controllers\BuyCoinController;
 use App\Infrastructure\Controllers\OpenNewWalletController;
 //use App\Infrastructure\Controllers\SellCoinController;
 use App\Infrastructure\Controllers\GetStatusController;
+use App\Infrastructure\Controllers\CriptocurrenciesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::post('coin/buy', BuyCoinController::class);
 
-//Route::get('/wallet/{wallet_id}', GetsWalletCryptocurrenciesController::class);
+Route::get('/wallet/{wallet_id}', CriptocurrenciesController::class);
 
 Route::get('/status', GetStatusController::class);
 
