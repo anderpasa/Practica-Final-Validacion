@@ -31,9 +31,10 @@ class WalletDataSourceFunctions implements WalletDataSource
         $price = $coin->getValueUsd();
         $wallet_id = $wallet->getWalletId();
         $amount_coins = $amount_usd/$price;
+        $coins = $wallet->getCoins();
 
-        foreach ($wallet['coins'] as $coin2){
-            if(strcmp($coin2['coin_id'], $coin_id) === 0){
+        foreach ($coins as $key=>$value){
+            if($key === "coin_id" and $value === $coin_id){
                 $wallet['coins']['amount'] += $amount_coins;
                 Cache::put('wallet'.$wallet_id,$wallet);
             }
@@ -46,9 +47,10 @@ class WalletDataSourceFunctions implements WalletDataSource
         $price = $coin->getValueUsd();
         $wallet_id = $wallet->getWalletId();
         $amount_coins = $amount_usd/$price;
+        $coins = $wallet->getCoins();
 
-        foreach ($wallet['coins'] as $coin2){
-            if(strcmp($coin2['coin_id'], $coin_id) === 0){
+        foreach ($coins as $key=>$value){
+            if($key === "coin_id" and $value === $coin_id){
                 $wallet['coins']['amount'] -= $amount_coins;
                 Cache::put('wallet'.$wallet_id,$wallet);
             }
