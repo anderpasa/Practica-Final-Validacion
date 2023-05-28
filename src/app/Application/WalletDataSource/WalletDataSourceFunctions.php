@@ -36,6 +36,7 @@ class WalletDataSourceFunctions implements WalletDataSource
         foreach ($coins as $key=>$value){
             if($key === "coin_id" and $value === $coin_id){
                 $wallet['coins']['amount'] += $amount_coins;
+                $wallet['coins']['value_usd'] += $amount_coins;
                 Cache::put('wallet'.$wallet_id,$wallet);
             }
         }
@@ -52,6 +53,7 @@ class WalletDataSourceFunctions implements WalletDataSource
         foreach ($coins as $key=>$value){
             if($key === "coin_id" and $value === $coin_id){
                 $wallet['coins']['amount'] -= $amount_coins;
+                $wallet['coins']['value_usd'] -= $amount_coins;
                 Cache::put('wallet'.$wallet_id,$wallet);
             }
         }
