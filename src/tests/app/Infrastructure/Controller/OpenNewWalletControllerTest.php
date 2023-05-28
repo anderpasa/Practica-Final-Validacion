@@ -2,10 +2,9 @@
 
 namespace Tests\app\Infrastructure\Controller;
 
-use App\Domain\Wallet;
-use Couchbase\WatchQueryIndexesOptions;
-use Mockery;
 use App\Application\WalletDataSource\WalletDataSource;
+use App\Domain\Wallet;
+use Mockery;
 use Tests\TestCase;
 
 class OpenNewWalletControllerTest extends TestCase

@@ -1,14 +1,15 @@
 <?php
+
 namespace App\Application\Services;
 
 use App\Application\CoinDataSource\CryptoCoinDataSource;
-use App\Application\CoinDataSource\SellCoinDataSource;
 use App\Application\WalletDataSource\WalletDataSource;
+use App\Domain\Coin;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
-class SellCoinService
+class CriptoBalanceService
 {
     private WalletDataSource $walletDataSource;
     private CryptoCoinDataSource $cryptoCoinDataSource;
@@ -22,25 +23,26 @@ class SellCoinService
     /**
      * @throws Exception
      */
-    public function execute(string $coin_id,string $wallet_id,float $amount_usd): JsonResponse
+    public function execute(string $wallet_id): JsonResponse
     {
-        try {
-            $coin = $this->cryptoCoinDataSource->findByCoinId($coin_id);
-        }catch (Exception){
-            return response()->json([
-                'error' => "A coin with the specified ID was not found"
-            ], Response::HTTP_NOT_FOUND);
-        }
-
+        $balance = 0;
         try {
             $wallet = $this->walletDataSource->get($wallet_id);
         }catch (Exception){
-            return response()->json([
+            return response()->json(['error' => "wallet_id mandatory",
             ], Response::HTTP_BAD_REQUEST);
         }
+        $coins = $wallet->getCoins();
+        $invertido = 0;
+        $valorActual =0;
 
-        $this->walletDataSource->sellCoin($wallet, $coin, $amount_usd);
-        return response()->json([
+        foreach ($coins as $coin) {
+            $valorActual += $this->cryptoCoinDataSource->findByCoinId($coin->getCoinId())->getValueUsd()*$coin->getAmount();
+            $invertido += $coin->getValueUsd();
+        }
+
+        $balance=$valorActual-$invertido;
+        return response()->json(['balance_usd'=>$balance,
         ], Response::HTTP_OK);
     }
 }
