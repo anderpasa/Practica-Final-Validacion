@@ -28,6 +28,7 @@ class CriptocurrenciesController extends BaseController
             return response()->json(
                 ['error' => "wallet_id mandatory"], Response::HTTP_BAD_REQUEST);
         }
+
         return $this->criptocurriencesService->execute($wallet_id);
     }
 }

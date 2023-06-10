@@ -6,6 +6,7 @@ use App\Application\WalletDataSource\WalletDataSource;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use function PHPUnit\Framework\isEmpty;
 
 class CriptocurriencesService
 {
@@ -23,12 +24,19 @@ class CriptocurriencesService
     {
         try {
             $wallet = $this->walletDataSource->get($wallet_id);
-        }catch (Exception){
-            return response()->json(['error' => "wallet_id mandatory",
-            ], Response::HTTP_BAD_REQUEST);
+        } catch (Exception $e) {
+            return response()->json(['error' => "Error fetching wallet: " . $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
-        return response()->json([
-            $wallet->getCoins()
-        ], Response::HTTP_OK);
+
+        if ($wallet === null) {
+            return response()->json(['error' => "Wallet not found"], Response::HTTP_NOT_FOUND);
+        }
+
+
+        //var_dump($wallet->getCoins());
+        return response()->json(['coins' => $wallet->getCoins()], Response::HTTP_OK);
+
     }
+
+
 }

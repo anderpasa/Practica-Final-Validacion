@@ -67,6 +67,7 @@ class Wallet
      */
     public function getCoins(): array
     {
+        //print("holi" . $this->coins[0]->getCoinId() . "\n");
         return $this->coins;
     }
 

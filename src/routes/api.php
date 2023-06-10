@@ -18,16 +18,16 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('coin/buy', BuyCoinController::class);
+Route::post('/coin/buy', BuyCoinController::class);
 
 Route::get('/wallet/{wallet_id}', CriptocurrenciesController::class);
 
 Route::get('/status', GetStatusController::class);
 
-Route::post('coin/sell', SellCoinController::class);
+Route::post('/coin/sell', SellCoinController::class);
 
-Route::post('wallet/open', OpenNewWalletController::class);
+Route::post('/wallet/open', OpenNewWalletController::class);
 
-Route::get('wallet/{wallet_id}/balance', CriptoBalanceController::class);
+Route::get('/wallet/{wallet_id}/balance', CriptoBalanceController::class);
 
 

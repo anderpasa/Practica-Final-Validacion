@@ -32,14 +32,20 @@ class WalletDataSourceFunctions implements WalletDataSource
         $wallet_id = $wallet->getWalletId();
         $amount_coins = $amount_usd/$price;
         $coins = $wallet->getCoins();
-
+        $existe = false;
         foreach ($coins as $key=>$value){
             if($key === "coin_id" and $value === $coin_id){
+                $existe = true;
                 $wallet['coins']['amount'] += $amount_coins;
                 $wallet['coins']['value_usd'] += $amount_coins;
                 Cache::put('wallet'.$wallet_id,$wallet);
             }
         }
+        if ($existe === false){
+            $wallet->setCoins([$coin]);
+            Cache::put('wallet'.$wallet_id,$wallet);
+        }
+
     }
 
     public function sellCoin(Wallet $wallet, Coin $coin, float $amount_usd):void

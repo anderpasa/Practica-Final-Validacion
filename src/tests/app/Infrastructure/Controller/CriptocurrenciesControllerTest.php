@@ -40,7 +40,17 @@ class CriptocurrenciesControllerTest extends TestCase
      */
     public function walletExiste()
     {
-        $wallet = new Wallet(1, []);
+        $walletId = 0;
+        $walletCoins = [
+            (new Coin('90', 'Bitcoin', 'BTC', 4, 26829.64))->getJsonData(),
+            (new Coin('80', 'Ethereum', 'ETH', 10, 1830))->getJsonData(),
+            (new Coin('518', 'Tether', 'USDT', 2, 1.00))->getJsonData(),
+            (new Coin('2710', 'Binance Coin', 'BNB', 4, 30705))->getJsonData(),
+        ];
+        $wallet = new Wallet($walletId, $walletCoins);
+
+
+        //$wallet = new Wallet(1, []);
         $this->walletDataSource
             ->expects('get')
             ->with(1)
@@ -48,7 +58,7 @@ class CriptocurrenciesControllerTest extends TestCase
 
         $response = $this->get('/api/wallet/1');
 
-        $response->assertExactJson([[]]);
+        $response->assertExactJson([$walletCoins]);
     }
 
 
