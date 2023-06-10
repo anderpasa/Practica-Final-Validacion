@@ -74,10 +74,31 @@ class Wallet
     /**
      * @param array $coins
      */
-    public function setCoins(array $coins): void
+    /*
+     * public function setCoins(array $coins): void
     {
-        $this->coins = $coins;
+        $this->coins = array_merge($this->coins, $coins);
+
     }
+*/
+    public function setCoins(array $newCoins): void
+    {
+        foreach ($newCoins as $newCoin) {
+            $found = false;
+            foreach ($this->coins as &$existingCoin) {
+                if ($existingCoin->getCoinId() === $newCoin->getCoinId()) {
+                    $existingCoin->setAmount($existingCoin->getAmount() + $newCoin->getAmount());
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (!$found) {
+                $this->coins[] = $newCoin;
+            }
+        }
+    }
+
 
 
 

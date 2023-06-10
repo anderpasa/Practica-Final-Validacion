@@ -27,20 +27,25 @@ class WalletDataSourceFunctions implements WalletDataSource
 
     public function insertCoin(Wallet $wallet, Coin $coin, float $amount_usd):void
     {
+
         $coin_id = $coin->getCoinId();
         $price = $coin->getValueUsd();
         $wallet_id = $wallet->getWalletId();
         $amount_coins = $amount_usd/$price;
         $coins = $wallet->getCoins();
         $existe = false;
-        foreach ($coins as $key=>$value){
-            if($key === "coin_id" and $value === $coin_id){
+
+
+        foreach ($wallet->getCoins() as $value){
+            if($value->getCoinId() === $coin->getCoinId()){
                 $existe = true;
-                $wallet['coins']['amount'] += $amount_coins;
-                $wallet['coins']['value_usd'] += $amount_coins;
+                $value->setAmount($value->getAmount() + $amount_coins);
+                $value->setValueUsd($value->getValueUsd() + $amount_coins);
                 Cache::put('wallet'.$wallet_id,$wallet);
             }
         }
+
+
         if ($existe === false){
             $wallet->setCoins([$coin]);
             Cache::put('wallet'.$wallet_id,$wallet);
@@ -50,18 +55,20 @@ class WalletDataSourceFunctions implements WalletDataSource
 
     public function sellCoin(Wallet $wallet, Coin $coin, float $amount_usd):void
     {
+
         $coin_id = $coin->getCoinId();
         $price = $coin->getValueUsd();
         $wallet_id = $wallet->getWalletId();
         $amount_coins = $amount_usd/$price;
         $coins = $wallet->getCoins();
 
-        foreach ($coins as $key=>$value){
-            if($key === "coin_id" and $value === $coin_id){
-                $wallet['coins']['amount'] -= $amount_coins;
-                $wallet['coins']['value_usd'] -= $amount_coins;
+        foreach ($wallet->getCoins() as $value){
+            if($value->getCoinId() === $coin->getCoinId()){
+                $value->setAmount($value->getAmount() - $amount_coins);
+                $value->setValueUsd($value->getValueUsd() - $amount_coins);
                 Cache::put('wallet'.$wallet_id,$wallet);
             }
         }
+
     }
 }
