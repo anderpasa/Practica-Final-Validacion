@@ -31,7 +31,7 @@ class GetCoinController extends BaseController
                 ], Response::HTTP_NOT_FOUND);
             }else{
                 return response()->json([
-                    'error' => 'Service Unavailible'
+                    'error' => 'DataSource Unavailible'
                 ], Response::HTTP_SERVICE_UNAVAILABLE);
             }
         }
