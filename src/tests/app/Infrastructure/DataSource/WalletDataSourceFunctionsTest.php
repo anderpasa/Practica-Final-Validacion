@@ -50,7 +50,6 @@ class WalletDataSourceFunctionsTest extends TestCase
 
         // Assertions
         $this->assertInstanceOf(Wallet::class, $result);
-
         $this->assertEquals($wallet_id, $result->getIdUsuario());
         $this->assertEquals($wallet, Cache::get('wallet'.$wallet_id));
     }
