@@ -23,7 +23,6 @@ class WalletDataSourceFunctionsTest extends TestCase
     protected function setUp(): void {
         parent::setUp();
 
-        // Mock the Cache Facade
         $this->cacheMock = Mockery::mock('overload:'.Cache::class);
         $this->walletDataSource = new WalletDataSourceFunctions();
     }
@@ -94,16 +93,12 @@ class WalletDataSourceFunctionsTest extends TestCase
 
         $this->walletDataSource->insertCoin($wallet, $coin, $amount_usd);
 
-        // Assume that you have a method getCoins() that returns the array of coins in the wallet
         $coins = $wallet->getCoins();
 
-        // Check that the array of coins contains the inserted coin
         $this->assertContains($coin, $coins);
 
-        // Assume that you have a method getAmount() that returns the amount of a coin in the wallet
         $coinAmount = $coin->getAmount();
 
-        // Check that the amount of the coin in the wallet is correct
         $this->assertEquals($amount_usd, $coinAmount);
     }
 
@@ -116,24 +111,19 @@ class WalletDataSourceFunctionsTest extends TestCase
         $wallet = new Wallet($wallet_id, [$coin]);
         $amount_usd = 50;
 
-        // Assume that Cache::get will be called and will return the Wallet object
         $this->cacheMock->shouldReceive('get')
             ->once()
             ->with('wallet'.$wallet_id)
             ->andReturn($wallet);
 
-        // Assume that Cache::put will be called with the Wallet object
         $this->cacheMock->shouldReceive('put')
             ->once()
             ->with('wallet'.$wallet_id, Mockery::type(Wallet::class));
 
-        // Call sellCoin method
         $this->walletDataSource->sellCoin($wallet, $coin, $amount_usd);
 
-        // Check if coin is still in the wallet
         $this->assertContains($coin, $wallet->getCoins());
 
-        // Check if coin amount is correct
         $filteredCoins = array_filter(
             $wallet->getCoins(),
             fn($c) => $c->getCoinId() === $coin_id
